@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"go_oreilly_app/trace"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sync"
 	"text/template"
@@ -27,10 +29,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var addr = flag.String("addr", ":8888", "アプリケーションのアドレス")
+	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
 	flag.Parse()
 	r := newRoom()
-	http.Handle("/", &templateHandler{filename: "chat.html"})
+	r.tracer = trace.New(os.Stdout)
+	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	http.Handle("/login", &templateHandler{filename: "login.html"})
+	http.HandleFunc("/auth/", loginHandler)
 	http.Handle("/room", r)
 	go r.run()
 	// Webサーバーを開始します
