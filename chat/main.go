@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_oreilly_app/config"
 	"go_oreilly_app/trace"
+	"go_oreilly_app/utils"
 	"log"
 	"net/http"
 	"os"
@@ -43,6 +44,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	utils.LoggingSettings("chat.log")
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
 	flag.Parse()
 	// Gomniauthのセットアップ
@@ -50,7 +52,7 @@ func main() {
 	gomniauth.WithProviders(
 		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, "http://localhost:5002/auth/callback/google"),
 	)
-	r := newRoom()
+	r := newRoom(UseAuthAvatar)
 	r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
@@ -65,6 +67,7 @@ func main() {
 		w.Header()["Location"] = []string{"/chat"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
+	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.Handle("/room", r)
 	go r.run()
 	// Webサーバーを開始します

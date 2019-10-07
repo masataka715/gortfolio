@@ -19,9 +19,7 @@ func (c *client) read() {
 		if err := c.socket.ReadJSON(&msg); err == nil {
 			msg.When = time.Now().Format("2006年01月02日 15時04分")
 			msg.Name = c.userData["name"].(string)
-			if avatarURL, ok := c.userData["avatar_url"]; ok {
-				msg.AvatarURL = avatarURL.(string)
-			}
+			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c)
 			c.room.forward <- msg
 		} else {
 			break
