@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"go_oreilly_app/config"
 	"go_oreilly_app/trace"
 	"go_oreilly_app/utils"
@@ -39,7 +38,6 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if authCookie, err := r.Cookie("auth"); err == nil {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
-	fmt.Println(data)
 	_ = t.templ.Execute(w, data)
 }
 
@@ -52,7 +50,7 @@ func main() {
 	gomniauth.WithProviders(
 		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, "http://localhost:5002/auth/callback/google"),
 	)
-	r := newRoom(UseAuthAvatar)
+	r := newRoom(UseFileSystemAvatar)
 	r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
