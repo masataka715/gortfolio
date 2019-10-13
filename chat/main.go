@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"go_oreilly_app/chat/database"
-	"go_oreilly_app/config"
-	"go_oreilly_app/trace"
-	"go_oreilly_app/utils"
+	"go_chat/chat/database"
+	"go_chat/config"
+	"go_chat/trace"
+	"go_chat/utils"
+
 	"log"
 	"net/http"
 	"os"
@@ -60,8 +61,10 @@ func main() {
 	gomniauth.WithProviders(
 		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, "http://localhost:5002/auth/callback/google"),
 	)
+
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
+
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
 	http.HandleFunc("/auth/", loginHandler)
@@ -81,6 +84,7 @@ func main() {
 		http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars"))))
 	http.Handle("/room", r)
 	go r.run()
+
 	// Webサーバーを開始します
 	log.Println("Webサーバーを開始します。ポート：", *addr)
 	if err := http.ListenAndServe(*addr, nil); err != nil {

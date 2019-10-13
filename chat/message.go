@@ -1,6 +1,6 @@
 package main
 
-import "go_oreilly_app/chat/database"
+import "go_chat/chat/database"
 
 type message struct {
 	ID        int

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go_oreilly_app/trace"
+	"go_chat/trace"
 	"log"
 	"net/http"
 
