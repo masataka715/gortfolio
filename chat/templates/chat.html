@@ -22,7 +22,16 @@
             </div>
         </div>
         <div class="my-3">
-            <ul class="list-group list-group-flush" id="messages"></ul>
+            <ul class="list-group list-group-flush" id="messages">
+                {{range $i, $v := .Msg}}
+                <li class="list-group-item">
+                    <img src="{{ $v.AvatarURL }}" width="25">
+                    <strong>{{ $v.Name }}</strong>
+                    <p>{{ $v.Message }}</p>
+                    <small>{{ $v.When }}</small>
+                </li>
+                {{ end }}
+            </ul>
         </div>
         <form id="chatbox" role="form">
             <div class="form-group">

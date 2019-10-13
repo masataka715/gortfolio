@@ -23,6 +23,7 @@ func (c *client) read() {
 				msg.AvatarURL = avatarURL.(string)
 			}
 			c.room.forward <- msg
+			MsgInsert(msg)
 		} else {
 			break
 		}

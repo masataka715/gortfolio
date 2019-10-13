@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"go_oreilly_app/chat/database"
 	"go_oreilly_app/config"
 	"go_oreilly_app/trace"
 	"go_oreilly_app/utils"
@@ -45,11 +46,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if authCookie, err := r.Cookie("auth"); err == nil {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
+	data["Msg"] = GetMsgAll()
 	_ = t.templ.Execute(w, data)
 }
 
 func main() {
 	utils.LoggingSettings("chat.log")
+	database.Migrate(message{})
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
 	flag.Parse()
 	// Gomniauthのセットアップ
