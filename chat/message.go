@@ -1,6 +1,6 @@
 package chat
 
-import "go_chat/database"
+import "gortfolio/database"
 
 type Message struct {
 	ID        int

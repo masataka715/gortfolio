@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"go_chat/trace"
+	"gortfolio/trace"
 	"log"
 	"net/http"
 

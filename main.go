@@ -2,12 +2,13 @@ package main
 
 import (
 	"flag"
-	"go_chat/chat"
-	"go_chat/config"
-	"go_chat/database"
-	"go_chat/handlers"
-	"go_chat/trace"
-	"go_chat/utils"
+	"gortfolio/chat"
+	"gortfolio/config"
+	"gortfolio/database"
+	"gortfolio/handlers"
+	"gortfolio/shiritori"
+	"gortfolio/trace"
+	"gortfolio/utils"
 
 	"html/template"
 	"log"
@@ -57,7 +58,7 @@ func main() {
 	r.Tracer = trace.New(os.Stdout)
 
 	http.HandleFunc("/", handlers.Home)
-	http.HandleFunc("/shiritori", handlers.Shiritori)
+	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.Handle("/chat", chat.MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
 	http.HandleFunc("/auth/", chat.LoginHandler)

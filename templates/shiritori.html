@@ -1,8 +1,25 @@
 {{define "title"}}しりとり{{end}}
 
 {{define "body"}}
-<h1>しりとり</h1>
-<article>
-    test
-</article>
+<div class="my-4 py-4 text-center" style="background-color: mintcream">
+    <h2>しりとり</h2>
+    <p>最初の文字：しりとりの「り」からです</p>
+    <p>平仮名で入力して下さい</p>
+    {{ if .lastLetter }}
+    <p>次は「{{ .lastLetter }}」</p>
+    {{ end }}
+    <form method="post" action="/shiritori">
+        <p>
+            {{ if .lastLetter }}
+            <input type="text" value="{{ .lastLetter }}" name="shiritoriWord">
+            {{ else }}
+            <input type="text" value="り" name="shiritoriWord">
+            {{ end }}
+            <input type="submit" value="送信">
+        </p>
+        {{ if .shiritoriMessage }}
+        <p class="text-danger">{{ .shiritoriMessage }}</p>
+        {{ end }}
+    </form>
+</div>
 {{end}}
