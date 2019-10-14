@@ -5,15 +5,16 @@ import (
 	"go_chat/chat"
 	"go_chat/config"
 	"go_chat/database"
+	"go_chat/handlers"
 	"go_chat/trace"
 	"go_chat/utils"
 
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
-	"text/template"
 
 	"github.com/stretchr/objx"
 
@@ -31,13 +32,9 @@ type templateHandler struct {
 // ServeHTTPはHTTPリクエストを処理します
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
-		t.templ =
-			template.Must(template.ParseFiles(filepath.Join("templates",
-				t.filename)))
+		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
-	data := map[string]interface{}{
-		"Host": r.Host,
-	}
+	data := map[string]interface{}{}
 	if authCookie, err := r.Cookie("auth"); err == nil {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
@@ -59,6 +56,8 @@ func main() {
 	r := chat.NewRoom()
 	r.Tracer = trace.New(os.Stdout)
 
+	http.HandleFunc("/", handlers.Home)
+	http.HandleFunc("/shiritori", handlers.Shiritori)
 	http.Handle("/chat", chat.MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
 	http.HandleFunc("/auth/", chat.LoginHandler)
@@ -80,8 +79,6 @@ func main() {
 	http.Handle("/room", r)
 	go r.Run()
 
-	// Webサーバーを開始します
-	log.Println("Webサーバーを開始します。ポート：", *addr)
 	if err := http.ListenAndServe(*addr, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
