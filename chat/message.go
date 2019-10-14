@@ -1,8 +1,8 @@
-package main
+package chat
 
-import "go_chat/chat/database"
+import "go_chat/database"
 
-type message struct {
+type Message struct {
 	ID        int
 	Name      string
 	Message   string
@@ -10,15 +10,15 @@ type message struct {
 	AvatarURL string
 }
 
-func MsgInsert(message *message) {
+func MsgInsert(message *Message) {
 	db := database.Open()
 	db.Create(&message)
 	defer db.Close()
 }
 
-func GetMsgAll() []message {
+func GetMsgAll() []Message {
 	db := database.Open()
-	var messages []message
+	var messages []Message
 	db.Find(&messages)
 	db.Close()
 	return messages

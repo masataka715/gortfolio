@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"go_chat/trace"
@@ -12,44 +12,44 @@ import (
 
 type room struct {
 	// forwardは他のクライアントに転送するためのメッセージを保持するチャネル
-	forward chan *message
+	forward chan *Message
 	join    chan *client
 	leave   chan *client
 	clients map[*client]bool
-	tracer  trace.Tracer
+	Tracer  trace.Tracer
 }
 
-func newRoom() *room {
+func NewRoom() *room {
 	return &room{
-		forward: make(chan *message),
+		forward: make(chan *Message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
-		tracer:  trace.Off(),
+		Tracer:  trace.Off(),
 	}
 }
 
-func (r *room) run() {
+func (r *room) Run() {
 	for {
 		select {
 		case client := <-r.join:
 			r.clients[client] = true
-			r.tracer.Trace("新しいクライアントが参加しました")
+			r.Tracer.Trace("新しいクライアントが参加しました")
 		case client := <-r.leave:
 			delete(r.clients, client)
 			close(client.send)
-			r.tracer.Trace("クライアントが退室しました")
+			r.Tracer.Trace("クライアントが退室しました")
 		case msg := <-r.forward:
-			r.tracer.Trace("メッセージを受信しました: ", msg.Message)
+			r.Tracer.Trace("メッセージを受信しました: ", msg.Message)
 			// すべてのクライアントにメッセージを転送
 			for client := range r.clients {
 				select {
 				case client.send <- msg:
-					r.tracer.Trace("ーー　クライアントに送信されました")
+					r.Tracer.Trace("ーー　クライアントに送信されました")
 				default:
 					delete(r.clients, client)
 					close(client.send)
-					r.tracer.Trace("ーー　送信に失敗しました。クライアントをクリーンアップします")
+					r.Tracer.Trace("ーー　送信に失敗しました。クライアントをクリーンアップします")
 				}
 			}
 		}
@@ -76,7 +76,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	client := &client{
 		socket:   socket,
-		send:     make(chan *message, messageBufferSize),
+		send:     make(chan *Message, messageBufferSize),
 		room:     r,
 		userData: objx.MustFromBase64(authCookie.Value),
 	}

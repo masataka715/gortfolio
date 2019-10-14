@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"go_chat/chat/database"
+	"go_chat/chat"
 	"go_chat/config"
+	"go_chat/database"
 	"go_chat/trace"
 	"go_chat/utils"
 
@@ -19,13 +20,6 @@ import (
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 )
-
-// 現在アクティブなAvatarの実装
-var avatars Avatar = TryAvatars{
-	UseFileSystemAvatar,
-	UseAuthAvatar,
-	UseGravatar,
-}
 
 // templは1つのテンプレートを表します
 type templateHandler struct {
@@ -47,13 +41,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if authCookie, err := r.Cookie("auth"); err == nil {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
-	data["Msg"] = GetMsgAll()
+	data["Msg"] = chat.GetMsgAll()
 	_ = t.templ.Execute(w, data)
 }
 
 func main() {
 	utils.LoggingSettings("chat.log")
-	database.Migrate(message{})
+	database.Migrate(chat.Message{})
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
 	flag.Parse()
 	// Gomniauthのセットアップ
@@ -62,12 +56,12 @@ func main() {
 		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, "http://localhost:5002/auth/callback/google"),
 	)
 
-	r := newRoom()
-	r.tracer = trace.New(os.Stdout)
+	r := chat.NewRoom()
+	r.Tracer = trace.New(os.Stdout)
 
-	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
+	http.Handle("/chat", chat.MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
-	http.HandleFunc("/auth/", loginHandler)
+	http.HandleFunc("/auth/", chat.LoginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:   "auth",
@@ -79,11 +73,12 @@ func main() {
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
-	http.HandleFunc("/uploader", uploaderHandler)
-	http.Handle("/avatars/",
-		http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars"))))
+	http.HandleFunc("/uploader", chat.UploaderHandler)
+	http.Handle("/chat/avatars/",
+		http.StripPrefix("/chat/avatars/", http.FileServer(http.Dir("chat/avatars"))))
+	log.Println(http.Dir("chat/avatars"))
 	http.Handle("/room", r)
-	go r.run()
+	go r.Run()
 
 	// Webサーバーを開始します
 	log.Println("Webサーバーを開始します。ポート：", *addr)

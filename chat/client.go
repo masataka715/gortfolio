@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"time"
@@ -8,14 +8,14 @@ import (
 
 type client struct {
 	socket   *websocket.Conn
-	send     chan *message
+	send     chan *Message
 	room     *room
 	userData map[string]interface{}
 }
 
 func (c *client) read() {
 	for {
-		var msg *message
+		var msg *Message
 		if err := c.socket.ReadJSON(&msg); err == nil {
 			msg.When = time.Now().Format("2006年01月02日 15時04分")
 			msg.Name = c.userData["name"].(string)

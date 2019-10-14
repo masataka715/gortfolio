@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"io"
@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func uploaderHandler(w http.ResponseWriter, req *http.Request) {
+func UploaderHandler(w http.ResponseWriter, req *http.Request) {
 	userId := req.FormValue("userid")
 	file, header, err := req.FormFile("avatarFile")
 	if err != nil {
@@ -21,13 +21,14 @@ func uploaderHandler(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, err.Error())
 		return
 	}
-	filename := filepath.Join("avatars", userId+filepath.Ext(header.Filename))
-	log.Println(filepath.Ext(header.Filename))
+	filename := filepath.Join("chat/avatars", userId+filepath.Ext(header.Filename))
 	err = ioutil.WriteFile(filename, data, 0777)
+	log.Println(filename)
 	if err != nil {
 		io.WriteString(w, err.Error())
 		return
 	}
-	io.WriteString(w, "成功")
-
+	// io.WriteString(w, "成功")
+	w.Header()["Location"] = []string{"/chat"}
+	w.WriteHeader(http.StatusMovedPermanently)
 }

@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"crypto/md5"
@@ -47,9 +47,9 @@ func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
 }
 
-// loginHandlerはサードパーティーへのログインの処理を受け持ちます。
+// LoginHandlerはサードパーティーへのログインの処理を受け持ちます。
 // パスの形式: /auth/{action}/{provider}
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	segs := strings.Split(r.URL.Path, "/")
 	action := segs[2]
 	provider := segs[3]
@@ -82,7 +82,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		m := md5.New()
 		io.WriteString(m, strings.ToLower(user.Name()))
 		chatUser.uniqueID = fmt.Sprintf("%x", m.Sum(nil))
-		avatarURL, err := avatars.GetAvatarURL(chatUser)
+		avatarURL, err := Avatars.GetAvatarURL(chatUser)
 		if err != nil {
 			log.Fatalln("GetAvatarURLに失敗しました", "-", err)
 		}
