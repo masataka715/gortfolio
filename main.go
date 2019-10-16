@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"gortfolio/chat"
 	"gortfolio/config"
 	"gortfolio/database"
 	"gortfolio/handlers"
-	"gortfolio/shiritori"
+	"gortfolio/pkg/chat"
+	"gortfolio/pkg/shiritori"
 	"gortfolio/trace"
 	"gortfolio/utils"
 
