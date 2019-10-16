@@ -1,7 +1,9 @@
 package shiritori
 
 import (
+	"encoding/base64"
 	"html/template"
+	"log"
 	"net/http"
 	"unicode/utf8"
 )
@@ -13,39 +15,40 @@ type Shiritori struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// if post
-	shiritoriWord := r.FormValue("shiritoriWord")
-	var cookie *http.Cookie
-	cookie.Value = "test"
-	lastLetter, message := judge(r, shiritoriWord, cookie)
-	if lastLetter != "" {
-		http.SetCookie(w, &http.Cookie{
-			Name:  "lastLetter",
-			Value: lastLetter,
-			Path:  "/",
-		})
+	data := map[string]interface{}{}
+	if r.Method == http.MethodPost {
+		r.ParseForm()
+		shiritoriWord := r.FormValue("shiritoriWord")
+		lastLetter, message := judge(r, shiritoriWord, "り")
+		if lastLetter != "" {
+			base64Value := base64.StdEncoding.EncodeToString([]byte(lastLetter))
+			http.SetCookie(w, &http.Cookie{
+				Name:  "lastLetter",
+				Value: base64Value,
+				Path:  "/",
+			})
+			data["lastLetter"] = lastLetter
+		}
+		data["shiritoriMessage"] = message
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:  "shiritoriMessage",
-		Value: message,
-		Path:  "/",
-	})
 
 	templates := template.Must(template.ParseFiles("templates/layout.html",
 		"templates/shiritori.html"))
-	_ = templates.ExecuteTemplate(w, "layout", nil)
+	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
-func judge(r *http.Request, word string, correctFirstLetter *http.Cookie) (string, string) {
+func judge(r *http.Request, word string, correctFirstLetter string) (string, string) {
 	var message string
 	var lastLetter string
 	wordRune := []rune(word)
 	firstLetter := string(wordRune[0])
 
-	// OnlyGoでは必要
-	correctFirstLetter, _ = r.Cookie("lastLetter")
-	if correctFirstLetter.Value == "" {
-		correctFirstLetter.Value = "り"
+	cookie, err := r.Cookie("lastLetter")
+	if err == nil {
+		v, _ := base64.StdEncoding.DecodeString(cookie.Value)
+		correctFirstLetter = string(v)
+	} else {
+		correctFirstLetter = "り"
 	}
 	// 平仮名かどうかの判断
 	whiteList := []string{
@@ -77,14 +80,15 @@ func judge(r *http.Request, word string, correctFirstLetter *http.Cookie) (strin
 	}
 	if flag != utf8.RuneCountInString(word) {
 		message = "平仮名で入力して下さい"
-		lastLetter = correctFirstLetter.Value
+		lastLetter = correctFirstLetter
 		return lastLetter, message
 	}
 
 	// 最初の文字が合っているかの判断
-	if firstLetter != correctFirstLetter.Value {
+	log.Println(firstLetter, correctFirstLetter)
+	if firstLetter != correctFirstLetter {
 		message = "最初の文字が違います"
-		lastLetter = correctFirstLetter.Value
+		lastLetter = correctFirstLetter
 		return lastLetter, message
 	}
 	// 最後の文字が「ん」かどうかの判断

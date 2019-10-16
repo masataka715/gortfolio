@@ -76,7 +76,6 @@ func main() {
 	http.HandleFunc("/uploader", chat.UploaderHandler)
 	http.Handle("/chat/avatars/",
 		http.StripPrefix("/chat/avatars/", http.FileServer(http.Dir("chat/avatars"))))
-	log.Println(http.Dir("chat/avatars"))
 	http.Handle("/room", r)
 	go r.Run()
 
