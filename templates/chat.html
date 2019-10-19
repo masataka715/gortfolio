@@ -5,13 +5,30 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
-        
+
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="dropdown">
+    <div id="app" class="container">
+        <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
+            <a class="navbar-brand text-dark" href="/">gortfolio</a>
+            <button class="navbar-toggler bg-dark" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbarNav" class="collapse navbar-collapse">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-secondary" href="/chat">チャット</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active bg-secondary" href="/shiritori">しりとり</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="dropdown mt-5 pt-3">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 アカウント
@@ -38,7 +55,9 @@
                 <label for="message">{{.UserData.name}}からメッセージを送信</label>
                 <textarea id="message" class="form-control"></textarea>
             </div>
-            <input type="submit" value="送信" class="btn btn-secondary" />
+            <div class="text-center">
+                <input type="submit" value="送信" class="btn btn-secondary" />
+            </div>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
