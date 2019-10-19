@@ -1,8 +1,9 @@
-package chat
+package auth
 
 import (
 	"crypto/md5"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -45,6 +46,14 @@ func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
+}
+
+func LoginScreenHandler(w http.ResponseWriter, r *http.Request) {
+	data := map[string]interface{}{}
+
+	templates := template.Must(template.ParseFiles("templates/layout.html",
+		"templates/login.html"))
+	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
 // LoginHandlerはサードパーティーへのログインの処理を受け持ちます。

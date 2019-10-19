@@ -1,9 +1,8 @@
-package chat
+package auth
 
 import (
 	"errors"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 )
 
@@ -53,18 +52,16 @@ type FileSystemAvatar struct{}
 var UseFileSystemAvatar FileSystemAvatar
 
 func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
-	log.Println("test")
-	if files, err := ioutil.ReadDir("chat/avatars"); err == nil {
+	if files, err := ioutil.ReadDir("pkg/chat/avatars"); err == nil {
 		for _, file := range files {
 			if file.IsDir() {
 				continue
 			}
 			if match, _ := filepath.Match(u.UniqueID()+"*", file.Name()); match {
-				return "/chat/avatars/" + file.Name(), nil
+				return "/avatars/" + file.Name(), nil
 			}
 		}
 	}
-	log.Println("test")
 	return "", ErrNoAvatarURL
 }
 

@@ -1,4 +1,4 @@
-package chat
+package auth
 
 import (
 	"io/ioutil"

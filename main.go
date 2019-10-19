@@ -5,6 +5,7 @@ import (
 	"gortfolio/config"
 	"gortfolio/database"
 	"gortfolio/handlers"
+	"gortfolio/pkg/auth"
 	"gortfolio/pkg/chat"
 	"gortfolio/pkg/shiritori"
 	"gortfolio/trace"
@@ -35,7 +36,9 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
-	data := map[string]interface{}{}
+	data := map[string]interface{}{
+		"Host": r.Host,
+	}
 	if authCookie, err := r.Cookie("auth"); err == nil {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
@@ -59,9 +62,9 @@ func main() {
 
 	http.HandleFunc("/", handlers.Home)
 	http.HandleFunc("/shiritori", shiritori.Handler)
-	http.Handle("/chat", chat.MustAuth(&templateHandler{filename: "chat.html"}))
-	http.Handle("/login", &templateHandler{filename: "login.html"})
-	http.HandleFunc("/auth/", chat.LoginHandler)
+	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat.html"}))
+	http.HandleFunc("/login", auth.LoginScreenHandler)
+	http.HandleFunc("/auth/", auth.LoginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:   "auth",
@@ -74,8 +77,8 @@ func main() {
 	})
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.HandleFunc("/uploader", chat.UploaderHandler)
-	http.Handle("/chat/avatars/",
-		http.StripPrefix("/chat/avatars/", http.FileServer(http.Dir("chat/avatars"))))
+	http.Handle("/avatars/",
+		http.StripPrefix("/avatars/", http.FileServer(http.Dir("pkg/chat/avatars"))))
 	http.Handle("/room", r)
 	go r.Run()
 
