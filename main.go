@@ -47,8 +47,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	utils.LoggingSettings("chat.log")
-	database.Migrate(chat.Message{})
+	utils.LoggingSettings("go.log")
+	// データベース
+	db := database.Open()
+	db.AutoMigrate(chat.Message{})
+	db.AutoMigrate(auth.User{})
+	defer db.Close()
+
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
 	flag.Parse()
 	// Gomniauthのセットアップ
@@ -64,6 +69,7 @@ func main() {
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat.html"}))
 	http.HandleFunc("/login", auth.LoginScreenHandler)
+	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/auth/", auth.LoginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{

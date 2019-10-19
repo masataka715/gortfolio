@@ -15,9 +15,3 @@ func Open() *gorm.DB {
 	}
 	return db
 }
-
-func Migrate(i interface{}) {
-	db := Open()
-	db.AutoMigrate(i)
-	defer db.Close()
-}

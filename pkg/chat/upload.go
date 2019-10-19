@@ -26,7 +26,6 @@ func UploaderHandler(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, err.Error())
 		return
 	}
-	// io.WriteString(w, "成功")
 	w.Header()["Location"] = []string{"/chat"}
 	w.WriteHeader(http.StatusMovedPermanently)
 }

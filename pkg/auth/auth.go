@@ -56,6 +56,42 @@ func LoginScreenHandler(w http.ResponseWriter, r *http.Request) {
 	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	data := map[string]interface{}{}
+	log.Println(r)
+	if r.Method == http.MethodPost {
+		// データベース保存
+		r.ParseForm()
+		register_email := r.FormValue("register_email")
+		register_password := r.FormValue("register_password")
+		user := &User{
+			Email:    register_email,
+			Password: register_password,
+		}
+		UserInsert(user)
+		// クッキー保存
+		m := md5.New()
+		io.WriteString(m, strings.ToLower("名前未登録"))
+		uniqueID := fmt.Sprintf("%x", m.Sum(nil))
+		authCookieValue := objx.New(map[string]interface{}{
+			"userid":     uniqueID,
+			"name":       "名前未登録",
+			"avatar_url": "/avatars/default.png",
+		}).MustBase64()
+		http.SetCookie(w, &http.Cookie{
+			Name:  "auth",
+			Value: authCookieValue,
+			Path:  "/",
+		})
+		w.Header()["Location"] = []string{"/chat"}
+		w.WriteHeader(http.StatusMovedPermanently)
+	}
+
+	templates := template.Must(template.ParseFiles("templates/layout.html",
+		"templates/register.html"))
+	_ = templates.ExecuteTemplate(w, "layout", data)
+}
+
 // LoginHandlerはサードパーティーへのログインの処理を受け持ちます。
 // パスの形式: /auth/{action}/{provider}
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
