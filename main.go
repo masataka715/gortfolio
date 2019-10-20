@@ -76,6 +76,7 @@ func main() {
 	http.HandleFunc("/todo/delete", todo.DeleteHandler)
 	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat/chat.html"}))
 	http.HandleFunc("/login", auth.LoginScreenHandler)
+	http.HandleFunc("/login/form", auth.LoginFormHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/auth/", auth.LoginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {

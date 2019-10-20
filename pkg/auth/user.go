@@ -13,3 +13,11 @@ func UserInsert(user *User) {
 	db.Create(&user)
 	defer db.Close()
 }
+
+func GetMatchingUser(user User) User {
+	db := database.Open()
+	newUser := User{}
+	db.Where("email = ?", user.Email).Where("password = ?", user.Password).First(&newUser)
+	db.Close()
+	return newUser
+}

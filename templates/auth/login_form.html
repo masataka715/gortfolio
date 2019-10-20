@@ -1,0 +1,20 @@
+{{define "title"}}ログインフォーム{{end}}
+
+{{define "body"}}
+<div>
+    <h4 class="my-4">ログインフォーム</h4>
+    <form action="/login/form" method="post">
+        <div class="form-group row">
+            <div class="w-50 mx-auto">
+                <input name="email" type="email" class="form-control" placeholder="メールアドレス" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="w-50 mx-auto">
+                <input name="password" type="password" class="form-control" placeholder="パスワード" />
+            </div>
+        </div>
+        <input type="submit" value="ログインする">
+    </form>
+</div>
+{{end}}
