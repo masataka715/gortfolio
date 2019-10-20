@@ -7,7 +7,9 @@ import (
 	"gortfolio/handlers"
 	"gortfolio/pkg/auth"
 	"gortfolio/pkg/chat"
+	"gortfolio/pkg/scraping"
 	"gortfolio/pkg/shiritori"
+	"gortfolio/pkg/todo"
 	"gortfolio/trace"
 	"gortfolio/utils"
 
@@ -67,7 +69,9 @@ func main() {
 
 	http.HandleFunc("/", handlers.Home)
 	http.HandleFunc("/shiritori", shiritori.Handler)
-	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat.html"}))
+	http.HandleFunc("/scraping", scraping.Handler)
+	http.HandleFunc("/todo", todo.Handler)
+	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat/chat.html"}))
 	http.HandleFunc("/login", auth.LoginScreenHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)
 	http.HandleFunc("/auth/", auth.LoginHandler)
@@ -81,7 +85,7 @@ func main() {
 		w.Header()["Location"] = []string{"/chat"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
-	http.Handle("/upload", &templateHandler{filename: "upload.html"})
+	http.Handle("/upload", &templateHandler{filename: "chat/upload.html"})
 	http.HandleFunc("/uploader", chat.UploaderHandler)
 	http.Handle("/avatars/",
 		http.StripPrefix("/avatars/", http.FileServer(http.Dir("pkg/chat/avatars"))))

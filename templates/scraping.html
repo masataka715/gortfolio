@@ -1,0 +1,12 @@
+{{define "title"}}スクレイピング{{end}}
+
+{{define "body"}}
+<div class="py-5" style="background-color: mintcream">
+    <h3 class="">QiitaのGoに関する記事で、先週いいねの多かったもの</h3>
+    {{ range $i, $v := .Qiita }}
+    <ul class="list-group">
+        <li class="list-group-item mx-auto w-75 text-dark text-left"><a class="text-dark font-weight-bold" href="{{ $v.Link }}">{{ $v.Text }}</a></li>
+    </ul>
+    {{ end }}
+</div>
+{{end}}

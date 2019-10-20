@@ -3,7 +3,6 @@ package shiritori
 import (
 	"encoding/base64"
 	"html/template"
-	"log"
 	"net/http"
 	"unicode/utf8"
 )
@@ -85,7 +84,6 @@ func judge(r *http.Request, word string, correctFirstLetter string) (string, str
 	}
 
 	// 最初の文字が合っているかの判断
-	log.Println(firstLetter, correctFirstLetter)
 	if firstLetter != correctFirstLetter {
 		message = "最初の文字が違います"
 		lastLetter = correctFirstLetter

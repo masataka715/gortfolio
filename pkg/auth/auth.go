@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 
 	gomniauthcommon "github.com/stretchr/gomniauth/common"
@@ -52,13 +55,12 @@ func LoginScreenHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{}
 
 	templates := template.Must(template.ParseFiles("templates/layout.html",
-		"templates/login.html"))
+		"templates/auth/login.html"))
 	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{}
-	log.Println(r)
 	if r.Method == http.MethodPost {
 		// データベース保存
 		r.ParseForm()
@@ -69,14 +71,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			Password: register_password,
 		}
 		UserInsert(user)
-		// クッキー保存
+
 		m := md5.New()
 		io.WriteString(m, strings.ToLower("名前未登録"))
 		uniqueID := fmt.Sprintf("%x", m.Sum(nil))
+		file, _ := os.Open("pkg/chat/avatars/default.png")
+		data, _ := ioutil.ReadAll(file)
+		filename := filepath.Join("pkg/chat/avatars", uniqueID+".jpg")
+		ioutil.WriteFile(filename, data, 0777)
 		authCookieValue := objx.New(map[string]interface{}{
 			"userid":     uniqueID,
 			"name":       "名前未登録",
-			"avatar_url": "/avatars/default.png",
+			"avatar_url": "/avatars/" + uniqueID + ".jpg",
 		}).MustBase64()
 		http.SetCookie(w, &http.Cookie{
 			Name:  "auth",
@@ -88,7 +94,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templates := template.Must(template.ParseFiles("templates/layout.html",
-		"templates/register.html"))
+		"templates/auth/register.html"))
 	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
@@ -128,6 +134,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(m, strings.ToLower(user.Name()))
 		chatUser.uniqueID = fmt.Sprintf("%x", m.Sum(nil))
 		avatarURL, err := Avatars.GetAvatarURL(chatUser)
+		log.Println(avatarURL)
 		if err != nil {
 			log.Fatalln("GetAvatarURLに失敗しました", "-", err)
 		}
