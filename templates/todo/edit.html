@@ -1,0 +1,36 @@
+{{define "title"}}タスク編集画面{{end}}
+
+{{define "body"}}
+<div class="py-5" style="background-color: aliceblue">
+    <h3 class="mb-5">タスク編集画面</h3>
+    <table class="table table-hover table-sm w-75 mx-auto bg-white">
+        <thead>
+            <tr>
+                <th scope="col-2">内容</th>
+                <th scope="col-2">状態</th>
+                <th scope="col-2"></th>
+                <th scope="col-2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <form action="/todo/edit/{{ .Todo.ID }}" method="post">
+                <tr>
+                    <td>
+                        <input name="text" value="{{ .Todo.Text }}" placeholder="入力してください" />
+                    </td>
+                    <td>
+                        <select name="status">
+                            <option value="未実行" {{ if eq .Todo.Status "未実行" }}selected{{ end }}>未実行</option>
+                            <option value="実行中" {{ if eq .Todo.Status "実行中" }}selected{{ end }}>実行中</option>
+                            <option value="終了" {{ if eq .Todo.Status "終了" }}selected{{ end }}>終了</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="submit" value="編集終了">
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
+</div>
+{{end}}

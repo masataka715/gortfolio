@@ -54,6 +54,7 @@ func main() {
 	db := database.Open()
 	db.AutoMigrate(chat.Message{})
 	db.AutoMigrate(auth.User{})
+	db.AutoMigrate(todo.Todo{})
 	defer db.Close()
 
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
@@ -71,6 +72,8 @@ func main() {
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
 	http.HandleFunc("/todo", todo.Handler)
+	http.HandleFunc("/todo/edit/", todo.EditHandler)
+	http.HandleFunc("/todo/delete", todo.DeleteHandler)
 	http.Handle("/chat", auth.MustAuth(&templateHandler{filename: "chat/chat.html"}))
 	http.HandleFunc("/login", auth.LoginScreenHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)

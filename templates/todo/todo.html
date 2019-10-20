@@ -1,0 +1,64 @@
+{{define "title"}}タスク管理{{end}}
+
+{{define "body"}}
+<div class="my-4 py-4 text-center" style="background-color:aliceblue">
+    <h3>タスク管理</h3>
+    <table class="table table-sm w-75 my-4 mx-auto bg-white">
+        <thead>
+            <tr>
+                <th scope="col-2">内容</th>
+                <th scope="col-2">状態</th>
+                <th scope="col-2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <form action="/todo" method="post">
+                <tr>
+                    <td>
+                        <input type="text" name="text" placeholder="入力してください" />
+                    </td>
+                    <td>
+                        <select name="status">
+                            <option value="未実行">未実行</option>
+                            <option value="実行中">実行中</option>
+                            <option value="終了">終了</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="submit" value="新規保存">
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
+    <table class="table table-hover table-sm w-75 mx-auto bg-white">
+        <thead>
+            <tr>
+                <th scope="col-2">内容</th>
+                <th scope="col-2">状態</th>
+                <th scope="col-2"></th>
+                <th scope="col-2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range $i, $v := .Todos }}
+            <tr>
+                <td>{{ $v.Text }}</td>
+                <td>{{ $v.Status }}</td>
+                <td>
+                    <form action="/todo/edit/{{ $v.ID }}" method="get">
+                        <input type="submit" value="編集">
+                    </form>
+                </td>
+                <td>
+                    <form action="/todo/delete" method="post">
+                        <input type="hidden" name="id" value="{{ $v.ID }}">
+                        <input type="submit" value="削除">
+                    </form>
+                </td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</div>
+{{end}}
