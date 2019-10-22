@@ -3,6 +3,7 @@ package auth
 import (
 	"crypto/md5"
 	"fmt"
+	"gortfolio/pkg/flash"
 	"io"
 	"log"
 	"net/http"
@@ -34,10 +35,15 @@ type authHandler struct {
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if cookie, err := r.Cookie("auth"); err == http.ErrNoCookie || cookie.Value == "" {
+		http.SetCookie(w, &http.Cookie{
+			Name:  "redirectUrl",
+			Value: r.URL.Path,
+			Path:  "/",
+		})
 		w.Header().Set("Location", "/login")
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	} else if err != nil {
-		panic(err.Error())
+		log.Println(err.Error())
 	} else {
 		h.next.ServeHTTP(w, r)
 	}
@@ -85,8 +91,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln("GetAvatarURLに失敗しました", "-", err)
 		}
 		SetAuthCookie(w, chatUser.uniqueID, user.Name(), avatarURL)
-		w.Header()["Location"] = []string{"/chat"}
-		w.WriteHeader(http.StatusTemporaryRedirect)
+		flash.Set(w, "AuthMessage", []byte("Googleアカウントでログインしました"))
+
+		cookie := GetRedirectCookie(w, r)
+		w.Header()["Location"] = []string{cookie.Value}
+		w.WriteHeader(http.StatusMovedPermanently)
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "アクション%sには非対応です", action)

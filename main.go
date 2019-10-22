@@ -86,7 +86,7 @@ func main() {
 			Path:   "/",
 			MaxAge: -1,
 		})
-		w.Header()["Location"] = []string{"/chat"}
+		w.Header()["Location"] = []string{"/"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
 	http.Handle("/upload", &templateHandler{filename: "chat/upload.html"})

@@ -7,14 +7,15 @@ import (
 
 type Todo struct {
 	ID        int
+	UserID    string
 	Text      string
 	Status    string
 	CreatedAt time.Time
 }
 
-func Insert(text string, status string) {
+func Insert(userID string, text string, status string) {
 	db := database.Open()
-	db.Create(&Todo{Text: text, Status: status})
+	db.Create(&Todo{UserID: userID, Text: text, Status: status})
 	defer db.Close()
 }
 
@@ -36,10 +37,10 @@ func Delete(id int) {
 	db.Close()
 }
 
-func GetAll() []Todo {
+func GetAll(userID string) []Todo {
 	db := database.Open()
 	var todos []Todo
-	db.Order("created_at desc").Find(&todos)
+	db.Where("user_id = ?", userID).Order("created_at desc").Find(&todos)
 	db.Close()
 	return todos
 }
