@@ -7,6 +7,7 @@ import (
 	"gortfolio/handlers"
 	"gortfolio/pkg/auth"
 	"gortfolio/pkg/chat"
+	"gortfolio/pkg/image"
 	"gortfolio/pkg/scraping"
 	"gortfolio/pkg/shiritori"
 	"gortfolio/pkg/todo"
@@ -69,6 +70,7 @@ func main() {
 	r.Tracer = trace.New(os.Stdout)
 
 	http.HandleFunc("/", handlers.Home)
+	http.HandleFunc("/images/qrcode.png", image.Handler)
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
 	http.HandleFunc("/todo", todo.Handler)
