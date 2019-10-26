@@ -1,8 +1,38 @@
 {{define "title"}}ホーム画面{{end}}
 
 {{define "body"}}
-<h3>ホーム画面</h3>
-<div class="mt-4">
+<h3 class="mt-4">ホーム画面</h3>
+<div class="my-4 py-4 mx-auto w-75" style="background-color: lavenderblush">
+    <div class="bg-white mx-auto w-75">
+        <a href="https://github.com/masataka715/gortfolio">当サイトのソースコード(GitHub)</a>
+    </div>
+</div>
+<div class="my-4 py-4 mx-auto w-75" style="background-color: mintcream">
     <img src="/images/qrcode.png" alt="QRコード" width="150" height="150">
+</div>
+<div class="my-4 py-4 mx-auto w-75" style="background-color:aliceblue">
+    <table class="table table-sm mx-auto w-50 bg-white">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2">
+                    現在の東京の天気<br><small>(OpenWeather API 使用)</small>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">天気</th>
+                <td>{{ .Weather.Weather }}</td>
+            </tr>
+            <tr>
+                <th scope="row">気温</th>
+                <td>{{ .Weather.Temp }}</td>
+            </tr>
+            <tr>
+                <th scope="row">風速</th>
+                <td>{{ .Weather.WindSpeed }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 {{end}}

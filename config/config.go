@@ -13,6 +13,7 @@ type ConfigList struct {
 	GoogleSecretValue string
 	DbName            string
 	SQLDriver         string
+	OpenWeatherApiKey string
 }
 
 var Config ConfigList
@@ -30,5 +31,6 @@ func init() {
 		GoogleSecretValue: cfg.Section("google").Key("secret_value").String(),
 		DbName:            cfg.Section("db").Key("name").String(),
 		SQLDriver:         cfg.Section("db").Key("driver").String(),
+		OpenWeatherApiKey: cfg.Section("openWeather").Key("ApiKey").String(),
 	}
 }
