@@ -6,6 +6,7 @@ import (
 	"gortfolio/database"
 	"gortfolio/pkg/auth"
 	"gortfolio/pkg/chat"
+	"gortfolio/pkg/footprint"
 	"gortfolio/pkg/home"
 	"gortfolio/pkg/image"
 	"gortfolio/pkg/scraping"
@@ -13,6 +14,7 @@ import (
 	"gortfolio/pkg/todo"
 	"gortfolio/trace"
 	"gortfolio/utils"
+	"time"
 
 	"html/template"
 	"log"
@@ -36,6 +38,9 @@ type templateHandler struct {
 
 // ServeHTTPはHTTPリクエストを処理します
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	when := time.Now().Format("2006年01月02日 15時04分")
+	footprint.Insert("チャット", when)
+
 	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
@@ -56,6 +61,7 @@ func main() {
 	db.AutoMigrate(chat.Message{})
 	db.AutoMigrate(auth.User{})
 	db.AutoMigrate(todo.Todo{})
+	db.AutoMigrate(footprint.Footprint{})
 	defer db.Close()
 
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
@@ -73,6 +79,7 @@ func main() {
 	http.HandleFunc("/images/qrcode.png", image.Handler)
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
+	http.HandleFunc("/footprint", footprint.Handler)
 	http.HandleFunc("/todo", todo.Handler)
 	http.HandleFunc("/todo/edit/", todo.EditHandler)
 	http.HandleFunc("/todo/delete", todo.DeleteHandler)

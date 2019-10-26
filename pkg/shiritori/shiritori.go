@@ -2,8 +2,10 @@ package shiritori
 
 import (
 	"encoding/base64"
+	"gortfolio/pkg/footprint"
 	"html/template"
 	"net/http"
+	"time"
 	"unicode/utf8"
 )
 
@@ -14,6 +16,9 @@ type Shiritori struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	when := time.Now().Format("2006年01月02日 15時04分")
+	footprint.Insert("しりとり", when)
+
 	data := map[string]interface{}{}
 	if r.Method == http.MethodPost {
 		r.ParseForm()

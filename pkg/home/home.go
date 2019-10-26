@@ -1,11 +1,18 @@
 package home
 
 import (
+	"gortfolio/pkg/footprint"
 	"html/template"
 	"net/http"
+	"time"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		when := time.Now().Format("2006年01月02日 15時04分")
+		footprint.Insert("ホーム", when)
+	}
+
 	data := map[string]interface{}{}
 	data["Weather"] = GetWeather()
 

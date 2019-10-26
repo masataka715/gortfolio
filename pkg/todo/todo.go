@@ -3,12 +3,17 @@ package todo
 import (
 	"gortfolio/pkg/auth"
 	"gortfolio/pkg/flash"
+	"gortfolio/pkg/footprint"
 	"html/template"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	when := time.Now().Format("2006年01月02日 15時04分")
+	footprint.Insert("タスク", when)
+
 	authData := auth.JudgeAuth(w, r)
 	if authData == nil {
 		return

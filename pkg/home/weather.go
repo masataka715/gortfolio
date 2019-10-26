@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	// OpenWeatherApiKey = "42ec1c264bf771dfe9e06897261c2b47"
 	EndPoint = "https://api.openweathermap.org/data/2.5/weather"
 )
 
@@ -122,7 +121,6 @@ func GetWeather() *ViewData {
 	tempFloat := response.Main.Temp - 273.15
 	temp := fmt.Sprintf("%.1f", tempFloat) + "℃"
 
-	// windSpeed := strconv.FormatFloat(float64(response.Wind.Speed), 'f', -1, 64)
 	windSpeed := fmt.Sprintf("%.1f", response.Wind.Speed) + "メートル / 秒"
 
 	viewData := &ViewData{

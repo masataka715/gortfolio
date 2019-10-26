@@ -1,9 +1,11 @@
 package scraping
 
 import (
+	"gortfolio/pkg/footprint"
 	"log"
 	"net/http"
 	"text/template"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -19,6 +21,9 @@ type Qiita struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	when := time.Now().Format("2006年01月02日 15時04分")
+	footprint.Insert("スクレイピング", when)
+
 	data := map[string]interface{}{}
 	slice := make([]Qiita, 5)
 

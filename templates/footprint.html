@@ -1,0 +1,25 @@
+{{define "title"}}あしあと{{end}}
+
+{{define "body"}}
+<div class="my-4 py-4 mx-auto w-75" style="background-color: mintcream">
+    <h3 class="">当サイトの閲覧履歴(最新の20件)</h3>
+    <div class="bg-white mx-auto w-75">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">時間</th>
+                    <th scope="col">閲覧したページ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range $i, $v := .Footprint }}
+                <tr>
+                    <td>{{ $v.When }}</td>
+                    <td>{{ $v.ViewPage}}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+</div>
+{{end}}
