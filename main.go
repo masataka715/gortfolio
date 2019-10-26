@@ -83,6 +83,7 @@ func main() {
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
 	http.HandleFunc("/footprint", footprint.Handler)
+	http.HandleFunc("/download/footprint", footprint.DownloadHandler)
 	http.HandleFunc("/todo", todo.Handler)
 	http.HandleFunc("/todo/edit/", todo.EditHandler)
 	http.HandleFunc("/todo/delete", todo.DeleteHandler)
