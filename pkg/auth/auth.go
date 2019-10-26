@@ -96,6 +96,20 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	_ = templates.ExecuteTemplate(w, "layout", data)
 }
 
+func TestLoginHandler(w http.ResponseWriter, r *http.Request) {
+	uniqueID := GetUniqueID("テストユーザー")
+	file, _ := os.Open("pkg/chat/avatars/default.png")
+	data, _ := ioutil.ReadAll(file)
+	filename := filepath.Join("pkg/chat/avatars", uniqueID+".jpg")
+	ioutil.WriteFile(filename, data, 0777)
+	SetAuthCookie(w, uniqueID, "テストユーザー", "/avatars/"+uniqueID+".jpg")
+	flash.Set(w, "AuthMessage", []byte("テストユーザーでログインしました"))
+
+	cookie := GetRedirectCookie(w, r)
+	w.Header()["Location"] = []string{cookie.Value}
+	w.WriteHeader(http.StatusTemporaryRedirect)
+}
+
 func GetRedirectCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	cookie, _ := r.Cookie("redirectUrl")
 	http.SetCookie(w, &http.Cookie{

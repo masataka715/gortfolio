@@ -6,6 +6,7 @@ import (
 	"gortfolio/database"
 	"gortfolio/pkg/auth"
 	"gortfolio/pkg/chat"
+	"gortfolio/pkg/flash"
 	"gortfolio/pkg/footprint"
 	"gortfolio/pkg/home"
 	"gortfolio/pkg/image"
@@ -51,6 +52,8 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		data["UserData"] = objx.MustFromBase64(authCookie.Value)
 	}
 	data["Msg"] = chat.GetMsgAll()
+	AuthMessage, _ := flash.Get(w, r, "AuthMessage")
+	data["AuthMessage"] = AuthMessage
 	_ = t.templ.Execute(w, data)
 }
 
@@ -87,6 +90,7 @@ func main() {
 	http.HandleFunc("/login", auth.LoginScreenHandler)
 	http.HandleFunc("/login/form", auth.LoginFormHandler)
 	http.HandleFunc("/register", auth.RegisterHandler)
+	http.HandleFunc("/test/login", auth.TestLoginHandler)
 	http.HandleFunc("/auth/", auth.LoginHandler)
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
@@ -95,6 +99,7 @@ func main() {
 			Path:   "/",
 			MaxAge: -1,
 		})
+		flash.Set(w, "AuthMessage", []byte("ログアウトしました"))
 		w.Header()["Location"] = []string{"/"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})

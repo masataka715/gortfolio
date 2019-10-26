@@ -1,6 +1,7 @@
 package home
 
 import (
+	"gortfolio/pkg/flash"
 	"gortfolio/pkg/footprint"
 	"html/template"
 	"net/http"
@@ -15,6 +16,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	data := map[string]interface{}{}
 	data["Weather"] = GetWeather()
+	AuthMessage, _ := flash.Get(w, r, "AuthMessage")
+	data["AuthMessage"] = AuthMessage
 
 	templates := template.Must(template.ParseFiles("templates/layout.html",
 		"templates/home.html"))

@@ -53,6 +53,7 @@
                 <a class="dropdown-item" href="/logout">ログアウト</a>
             </div>
         </div>
+        <p class="text-secondary text-center my-3">{{ .AuthMessage }}</p>
         <div class="my-3">
             <ul class="list-group list-group-flush" id="messages">
                 {{range $i, $v := .Msg}}
