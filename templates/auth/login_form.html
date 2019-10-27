@@ -13,6 +13,7 @@
             <div class="w-50 mx-auto">
                 <input name="password" type="password" class="form-control" placeholder="パスワード" required pattern="^[0-9A-Za-z]+$"/>
                 <small>※半角英数のみ</small>
+                <p class="mb-0 text-danger">{{ .ErrMessage }}</p>
             </div>
         </div>
         <input type="submit" value="ログインする">

@@ -39,6 +39,7 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusMovedPermanently)
 			return
 		}
+		data["ErrMessage"] = "ログインできませんでした"
 	}
 
 	templates := template.Must(template.ParseFiles("templates/layout.html",
