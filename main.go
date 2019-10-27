@@ -30,14 +30,12 @@ import (
 	"github.com/stretchr/gomniauth/providers/google"
 )
 
-// templは1つのテンプレートを表します
 type templateHandler struct {
 	once     sync.Once
 	filename string
 	templ    *template.Template
 }
 
-// ServeHTTPはHTTPリクエストを処理します
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	when := time.Now().Format("2006年01月02日 15時04分")
 	footprint.Insert("チャット", when)

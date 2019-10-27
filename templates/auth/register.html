@@ -6,12 +6,14 @@
     <form action="/register" method="post">
         <div class="form-group row">
             <div class="w-50 mx-auto">
-                <input name="register_email" type="email" class="form-control" placeholder="メールアドレス" />
+                <input name="register_email" type="email" class="form-control" placeholder="メールアドレス" required pattern="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"/>
             </div>
         </div>
         <div class="form-group row">
             <div class="w-50 mx-auto">
-                <input name="register_password" type="password" class="form-control" placeholder="パスワード" />
+                <input name="register_password" type="password" class="form-control" placeholder="パスワード" required pattern="^[0-9A-Za-z]+$"/>
+                <small>※8文字以上,半角英数のみ</small>
+                <p class="mb-0 text-danger">{{ .ErrMessage }}</p>
             </div>
         </div>
         <input type="submit" value="登録する">

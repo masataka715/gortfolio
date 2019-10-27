@@ -6,12 +6,13 @@
     <form action="/login/form" method="post">
         <div class="form-group row">
             <div class="w-50 mx-auto">
-                <input name="email" type="email" class="form-control" placeholder="メールアドレス" />
+                <input name="email" type="email" class="form-control" placeholder="メールアドレス" required pattern="^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"/>
             </div>
         </div>
         <div class="form-group row">
             <div class="w-50 mx-auto">
-                <input name="password" type="password" class="form-control" placeholder="パスワード" />
+                <input name="password" type="password" class="form-control" placeholder="パスワード" required pattern="^[0-9A-Za-z]+$"/>
+                <small>※半角英数のみ</small>
             </div>
         </div>
         <input type="submit" value="ログインする">
