@@ -1,15 +1,20 @@
-package image
+package home
 
 import (
 	"image/png"
-	"net/http"
+	"os"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func MakeQRcode() {
+	filename := "images/qrcode.png"
+	if _, err := os.Stat(filename); err == nil {
+		return
+	}
 	qrCode, _ := qr.Encode("ポートフォリオをご覧頂き、ありがとうございます", qr.M, qr.Auto)
 	qrCode, _ = barcode.Scale(qrCode, 150, 150)
-	png.Encode(w, qrCode)
+	file, _ := os.Create(filename)
+	png.Encode(file, qrCode)
 }

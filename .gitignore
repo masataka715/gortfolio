@@ -3,4 +3,5 @@ config.ini
 *.log
 *.jpg
 *.sql
+images/
 IPA_font/

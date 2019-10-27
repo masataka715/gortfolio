@@ -9,7 +9,7 @@ import (
 	"gortfolio/pkg/flash"
 	"gortfolio/pkg/footprint"
 	"gortfolio/pkg/home"
-	"gortfolio/pkg/image"
+	"gortfolio/pkg/page"
 	"gortfolio/pkg/scraping"
 	"gortfolio/pkg/shiritori"
 	"gortfolio/pkg/todo"
@@ -65,6 +65,8 @@ func main() {
 	db.AutoMigrate(auth.User{})
 	db.AutoMigrate(todo.Todo{})
 	db.AutoMigrate(footprint.Footprint{})
+	db.AutoMigrate(page.Page{})
+	page.Seed()
 	defer db.Close()
 
 	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
@@ -79,7 +81,8 @@ func main() {
 	r.Tracer = trace.New(os.Stdout)
 
 	http.HandleFunc("/", home.Handler)
-	http.HandleFunc("/images/qrcode.png", image.Handler)
+	http.Handle("/images/",
+		http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
 	http.HandleFunc("/footprint", footprint.Handler)

@@ -11,7 +11,9 @@ import (
 func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		when := time.Now().Format("2006年01月02日 15時04分")
-		footprint.Insert("ホーム", when)
+		go footprint.Insert("ホーム", when)
+		go MakeAccessGraph()
+		go MakeQRcode()
 	}
 
 	data := map[string]interface{}{}

@@ -61,8 +61,8 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 		h = 90.0 + (realHeight+10.0)*(float64(i)-1.0)
 		pdf.Line(150, h, 470, h)
 		rect = gopdf.Rect{W: 600, H: h}
-		// pdf.Cell(&rect, f.When+f.ViewPage)
-		pdf.CellWithOption(&rect, f.When+f.ViewPage, op)
+		// pdf.Cell(&rect, f.When+f.PageName)
+		pdf.CellWithOption(&rect, f.When+" "+f.PageName, op)
 	}
 
 	pdf.Write(w)
