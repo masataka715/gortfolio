@@ -11,11 +11,12 @@ import (
 )
 
 var (
-	quiita_url   = "https://qiita.com"
-	qiita_go_url = "https://qiita.com/tags/go"
+	quiita_url    = "https://qiita.com"
+	qiita_go_url  = "https://qiita.com/tags/go"
+	qiita_gcp_url = "https://qiita.com/tags/gcp"
 )
 
-type Qiita struct {
+type QiitaTrend struct {
 	Text string
 	Link string
 }
@@ -25,22 +26,30 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	footprint.Insert("スクレイピング", when)
 
 	data := map[string]interface{}{}
-	slice := make([]Qiita, 5)
 
-	doc, err := goquery.NewDocument(qiita_go_url)
+	sliceGo := GetQiitaTrend(qiita_go_url)
+	data["QiitaGo"] = sliceGo
+
+	sliceGCP := GetQiitaTrend(qiita_gcp_url)
+	data["QiitaGCP"] = sliceGCP
+
+	templates := template.Must(template.ParseFiles("templates/layout.html",
+		"templates/scraping.html"))
+	_ = templates.ExecuteTemplate(w, "layout", data)
+}
+
+func GetQiitaTrend(url string) []QiitaTrend {
+	slice := make([]QiitaTrend, 5)
+	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		log.Println("goqueryのdocumentの取得に失敗しました")
 	}
 	doc.Find("a.tst-ArticleBody_title").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
-		slice[i] = Qiita{
+		slice[i] = QiitaTrend{
 			Text: s.Text(),
 			Link: quiita_url + href,
 		}
 	})
-	data["Qiita"] = slice
-
-	templates := template.Must(template.ParseFiles("templates/layout.html",
-		"templates/scraping.html"))
-	_ = templates.ExecuteTemplate(w, "layout", data)
+	return slice
 }
