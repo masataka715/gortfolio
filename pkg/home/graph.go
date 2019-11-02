@@ -25,14 +25,21 @@ func MakeAccessGraph() {
 	p.NominalX("home", "chat", "scraping", "shiritori", "task", "footprint")
 
 	counts := footprint.GetCount()
-	nums := plotter.Values{
-		float64(counts[0].Count),
-		float64(counts[1].Count),
-		float64(counts[2].Count),
-		float64(counts[3].Count),
-		float64(counts[4].Count),
-		float64(counts[5].Count),
+	const pageCount = 6
+	var nums plotter.Values
+	if len(counts) < pageCount {
+		nums = plotter.Values{0, 0, 0, 0, 0, 0}
+	} else {
+		nums = plotter.Values{
+			float64(counts[0].Count),
+			float64(counts[1].Count),
+			float64(counts[2].Count),
+			float64(counts[3].Count),
+			float64(counts[4].Count),
+			float64(counts[5].Count),
+		}
 	}
+
 	breadth := vg.Points(25)
 	bar, err := plotter.NewBarChart(nums, breadth)
 	if err != nil {
