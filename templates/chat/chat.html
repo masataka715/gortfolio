@@ -59,7 +59,7 @@
             </div>
         </div>
         <p class="text-secondary text-center my-3">{{ .AuthMessage }}</p>
-        <div class="my-3">
+        <div class="my-3" style="height: 600px; overflow: scroll;" id="mesScroll">
             <ul class="list-group list-group-flush" id="messages">
                 {{range $i, $v := .Msg}}
                 <li class="list-group-item">
@@ -92,6 +92,9 @@
         crossorigin="anonymous"></script>
     <script>
         $(function () {
+            var obj = document.getElementById("mesScroll");
+            obj.scrollTop = obj.scrollHeight;
+
             var socket = null;
             var msgBox = $("#chatbox textarea");
             var messages = $("#messages");

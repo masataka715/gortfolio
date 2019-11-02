@@ -1,17 +1,24 @@
-# gortfolio
+<h1>gortfolio</h1>
 
 <h2>概要</h2>
 <p>golangで作ったポートフォリオ（portfolio） 略して、gortfolio</p>
-<p>チャット、スクレイピング、しりとりなど、種々雑多な機能を詰め込んだサイト</p>
-<h2>機能一覧</h2>
+<p>チャット、スクレイピング、しりとりなど、種々雑多な機能を詰め込んだサイトを、GCEへデプロイ</p>
+
+<h2>機能</h2>
 <ol>
-    <li>ページ別アクセス数の棒グラフ表示</li>
     <li>Qiitaのトレンド記事表示（スクレイピング,goquery）</li>
+    <li>現在の東京の天気・気温・風速表示（OpenWeather API)</li>
+    <li>あしあと機能</li>
+    <ul>
+        <li>ページ別アクセス数の棒グラフ表示（gonum）</li>
+        <li>閲覧者のアクセスページ・日時の表示・PDF出力機能（gopdf）</li>
+    </ul>
     <li>認証機能</li>
     <ul>
       <li>Googleアカウントによるログイン(gomniauth)</li>
       <li>新規登録、ログイン、ログアウト</li>
       <li>テストユーザーでログイン</li>
+      <li>フラッシュメッセージ表示</li>
     </ul>
     <li>websocketを用いたチャット機能</li>
     <ul>
@@ -23,7 +30,6 @@
     <ul>
       <li>タスクの作成・編集・削除</li>
     </ul>
-    <li>あしあと機能</li>
     <li>QRコード表示</li>
 </ol>  
 
@@ -34,3 +40,4 @@
     <li>SQLite3</li>
     <li>Bootstrap4</li>
 </ol>
+
