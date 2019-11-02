@@ -26,13 +26,13 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	pdf := gopdf.GoPdf{}
 	pdf.Start(gopdf.Config{PageSize: *gopdf.PageSizeA4})
 	pdf.AddPage()
-	err := pdf.AddTTFFont("ipagp", "IPA_font/ipagp.ttf")
+	err := pdf.AddTTFFont("ipam", "IPA_font/ipam.ttf")
 	if err != nil {
 		log.Print(err.Error())
 		return
 	}
 	fontSize := 15
-	err = pdf.SetFont("ipagp", "", fontSize)
+	err = pdf.SetFont("ipam", "", fontSize)
 	if err != nil {
 		log.Print(err.Error())
 		return
@@ -44,7 +44,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	pdf.CellWithOption(&rect, text, op)
 
 	var parser core.TTFParser
-	err = parser.Parse("IPA_font/ipagp.ttf")
+	err = parser.Parse("IPA_font/ipam.ttf")
 	if err != nil {
 		log.Print(err.Error())
 		return
