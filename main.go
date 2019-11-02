@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"gortfolio/config"
 	"gortfolio/database"
 	"gortfolio/pkg/auth"
@@ -67,12 +66,9 @@ func main() {
 	page.Seed()
 	defer db.Close()
 
-	var addr = flag.String("addr", ":5002", "アプリケーションのアドレス")
-	flag.Parse()
-	// Gomniauthのセットアップ
 	gomniauth.SetSecurityKey(config.Config.GomniauthKey)
 	gomniauth.WithProviders(
-		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, "http://localhost:5002/auth/callback/google"),
+		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, config.Config.AppURLLocal+"/auth/callback/google"),
 	)
 
 	r := chat.NewRoom()
@@ -112,7 +108,7 @@ func main() {
 	http.Handle("/room", r)
 	go r.Run()
 
-	if err := http.ListenAndServe(*addr, nil); err != nil {
+	if err := http.ListenAndServe(":80", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }

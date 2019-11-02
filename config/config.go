@@ -8,6 +8,8 @@ import (
 )
 
 type ConfigList struct {
+	AppURLProd        string
+	AppURLLocal       string
 	GomniauthKey      string
 	GoogleClientID    string
 	GoogleSecretValue string
@@ -26,6 +28,8 @@ func init() {
 	}
 
 	Config = ConfigList{
+		AppURLProd:        cfg.Section("appURL").Key("production").String(),
+		AppURLLocal:       cfg.Section("appURL").Key("local").String(),
 		GomniauthKey:      cfg.Section("gomniauth").Key("security_key").String(),
 		GoogleClientID:    cfg.Section("google").Key("clientID").String(),
 		GoogleSecretValue: cfg.Section("google").Key("secret_value").String(),
