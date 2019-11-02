@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"io/ioutil"
+	"log"
 	"path/filepath"
 )
 
@@ -10,13 +11,17 @@ import (
 var ErrNoAvatarURL = errors.New("chat: アバターのURLを取得できません")
 
 type Avatar interface {
-	// GetAvatarURLは指定されたクライアントのアバターのURLを返します。
-	// 問題が発生した場合にはエラーを返します。特に、URLを取得できなかった
-	// 場合にはErrNoAvatarURLを返します。
 	GetAvatarURL(ChatUser) (string, error)
 }
 
+// 現在アクティブなAvatar
 type TryAvatars []Avatar
+
+var Avatars Avatar = TryAvatars{
+	UseFileSystemAvatar,
+	UseAuthAvatar,
+	UseGravatar,
+}
 
 func (a TryAvatars) GetAvatarURL(u ChatUser) (string, error) {
 	for _, avatar := range a {
@@ -27,6 +32,28 @@ func (a TryAvatars) GetAvatarURL(u ChatUser) (string, error) {
 	return "", ErrNoAvatarURL
 }
 
+// ユーザーが追加したアバター
+type FileSystemAvatar struct{}
+
+var UseFileSystemAvatar FileSystemAvatar
+
+func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
+	log.Println(u)
+	if files, err := ioutil.ReadDir("pkg/chat/avatars"); err == nil {
+		for _, file := range files {
+			log.Println(file.Name())
+			if file.IsDir() {
+				continue
+			}
+			if match, _ := filepath.Match(u.UniqueID()+"*", file.Name()); match {
+				return "/avatars/" + file.Name(), nil
+			}
+		}
+	}
+	return "", ErrNoAvatarURL
+}
+
+// Googleアカウントのアバター
 type AuthAvatar struct{}
 
 var UseAuthAvatar AuthAvatar
@@ -39,35 +66,11 @@ func (_ AuthAvatar) GetAvatarURL(u ChatUser) (string, error) {
 	return "", ErrNoAvatarURL
 }
 
+// グラバターのアバター
 type GravatarAvatar struct{}
 
 var UseGravatar GravatarAvatar
 
 func (_ GravatarAvatar) GetAvatarURL(u ChatUser) (string, error) {
 	return "//www.gravatar.com/avatar/" + u.UniqueID(), nil
-}
-
-type FileSystemAvatar struct{}
-
-var UseFileSystemAvatar FileSystemAvatar
-
-func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
-	if files, err := ioutil.ReadDir("pkg/chat/avatars"); err == nil {
-		for _, file := range files {
-			if file.IsDir() {
-				continue
-			}
-			if match, _ := filepath.Match(u.UniqueID()+"*", file.Name()); match {
-				return "/avatars/" + file.Name(), nil
-			}
-		}
-	}
-	return "", ErrNoAvatarURL
-}
-
-// 現在アクティブなAvatarの実装
-var Avatars Avatar = TryAvatars{
-	UseFileSystemAvatar,
-	UseAuthAvatar,
-	UseGravatar,
 }

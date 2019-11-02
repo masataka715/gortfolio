@@ -11,7 +11,6 @@ import (
 )
 
 type room struct {
-	// forwardは他のクライアントに転送するためのメッセージを保持するチャネル
 	forward chan *Message
 	join    chan *client
 	leave   chan *client

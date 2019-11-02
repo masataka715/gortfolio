@@ -1,10 +1,14 @@
 package chat
 
 import (
+	"gortfolio/pkg/auth"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/stretchr/objx"
 )
 
 func UploaderHandler(w http.ResponseWriter, req *http.Request) {
@@ -26,6 +30,18 @@ func UploaderHandler(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, err.Error())
 		return
 	}
+	authCookie, err := req.Cookie("auth")
+	if err != nil {
+		log.Fatal("クッキーの取得に失敗しました:", err)
+		return
+	}
+	// authCookieのavatar_url更新
+	userData := objx.MustFromBase64(authCookie.Value)
+	userData["avatar_url"] = "/avatars/" + userId + filepath.Ext(header.Filename)
+	auth.SetAuthCookie(w, userData["userid"].(string), userData["name"].(string), userData["avatar_url"].(string))
+	// データベースのavatar_url更新
+	UpdateAvatarURL(userId, "/avatars/"+userId+filepath.Ext(header.Filename))
+
 	w.Header()["Location"] = []string{"/chat"}
 	w.WriteHeader(http.StatusMovedPermanently)
 }
