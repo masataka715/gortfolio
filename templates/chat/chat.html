@@ -54,11 +54,12 @@
                 <i class="far fa-user"></i> アカウント
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/rename">名前変更</a>
                 <a class="dropdown-item" href="/upload">画像アップロード</a>
                 <a class="dropdown-item" href="/logout">ログアウト</a>
             </div>
         </div>
-        <p class="text-secondary text-center my-3">{{ .AuthMessage }}</p>
+        <p class="text-primary text-center my-3">{{ .AuthMessage }}</p>
         <div class="my-3" style="height: 600px; overflow: scroll;" id="mesScroll">
             <ul class="list-group list-group-flush" id="messages">
                 {{range $i, $v := .Msg}}
@@ -128,6 +129,7 @@
                             $("<small>").text(msg.When)
                         )
                     );
+                    obj.scrollTop = obj.scrollHeight;
                 }
             }
         });

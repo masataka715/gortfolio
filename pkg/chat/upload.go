@@ -7,13 +7,27 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"text/template"
 
 	"github.com/stretchr/objx"
 )
 
-func UploaderHandler(w http.ResponseWriter, req *http.Request) {
-	userId := req.FormValue("userid")
-	file, header, err := req.FormFile("avatarFile")
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
+	authData := auth.JudgeAuth(w, r)
+	if authData == nil {
+		return
+	}
+
+	data := map[string]interface{}{}
+	data["UserData"] = authData
+
+	templates := template.Must(template.ParseFiles("templates/layout.html", "templates/chat/upload.html"))
+	_ = templates.ExecuteTemplate(w, "layout", data)
+}
+
+func UploaderHandler(w http.ResponseWriter, r *http.Request) {
+	userId := r.FormValue("userid")
+	file, header, err := r.FormFile("avatarFile")
 	if err != nil {
 		io.WriteString(w, err.Error())
 		return
@@ -30,7 +44,7 @@ func UploaderHandler(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, err.Error())
 		return
 	}
-	authCookie, err := req.Cookie("auth")
+	authCookie, err := r.Cookie("auth")
 	if err != nil {
 		log.Fatal("クッキーの取得に失敗しました:", err)
 		return

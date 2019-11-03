@@ -19,6 +19,15 @@ func MsgInsert(message *Message) {
 	defer db.Close()
 }
 
+func UpdateName(userID string, Name string) {
+	db := database.Open()
+	msg := Message{}
+	msg.Name = Name
+	db = db.Where("user_id = ?", userID)
+	db.Model(&msg).Update(&msg)
+	defer db.Close()
+}
+
 func UpdateAvatarURL(userID string, avatarURL string) {
 	db := database.Open()
 	msg := Message{}

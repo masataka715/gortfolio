@@ -3,7 +3,6 @@ package auth
 import (
 	"errors"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 )
 
@@ -38,10 +37,8 @@ type FileSystemAvatar struct{}
 var UseFileSystemAvatar FileSystemAvatar
 
 func (_ FileSystemAvatar) GetAvatarURL(u ChatUser) (string, error) {
-	log.Println(u)
 	if files, err := ioutil.ReadDir("pkg/chat/avatars"); err == nil {
 		for _, file := range files {
-			log.Println(file.Name())
 			if file.IsDir() {
 				continue
 			}

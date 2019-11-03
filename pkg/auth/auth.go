@@ -48,7 +48,7 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestLoginHandler(w http.ResponseWriter, r *http.Request) {
-	uniqueID := GetUniqueID("テストユーザー")
+	uniqueID := GetUniqueID("testUserAWByyToQBh")
 	file, _ := os.Open("pkg/chat/avatars/default.png")
 	data, _ := ioutil.ReadAll(file)
 	filename := filepath.Join("pkg/chat/avatars", uniqueID+".jpg")

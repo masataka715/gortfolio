@@ -1,4 +1,4 @@
-{{define "title"}}画像のアップロード{{end}}
+{{define "title"}}名前変更{{end}}
 
 {{define "body"}}
 <div class="mx-auto w-50">
@@ -9,18 +9,19 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="/chat">チャット</a>
-            <a class="dropdown-item" href="/rename">名前変更</a>
+            <a class="dropdown-item" href="/upload">画像アップロード</a>
             <a class="dropdown-item" href="/logout">ログアウト</a>
         </div>
     </div>
     <div class="my-4 py-4 text-center" style="background-color:aliceblue">
-        <h3 class="">画像のアップロード</h3>
-        <form role="form" action="/uploader" enctype="multipart/form-data" method="post">
-            <p class="my-4">アップロードするファイルを選んで下さい</p>
+        <h3 class="">名前変更</h3>
+        <form action="/rename" method="post">
+            <p class="mt-4 my-0">新しい名前を入力して下さい</p>
+            <p class="text-danger">テストユーザーは名前を変更できません</p>
             <input type="hidden" name="userid" value="{{.UserData.userid}}" />
-            <input type="file" name="avatarFile">
+            <input type="text" name="newName" value="{{.UserData.name}}">
             <div class="mt-4">
-                <input type="submit" value="アップロード" class="btn btn-primary" />
+                <input type="submit" value="変更する" class="btn btn-primary" />
             </div>
         </form>
     </div>

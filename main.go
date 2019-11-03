@@ -14,13 +14,13 @@ import (
 	"gortfolio/pkg/todo"
 	"gortfolio/trace"
 	"gortfolio/utils"
+	"path/filepath"
 	"time"
 
 	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/stretchr/objx"
@@ -101,7 +101,8 @@ func main() {
 		w.Header()["Location"] = []string{"/"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	})
-	http.Handle("/upload", &templateHandler{filename: "chat/upload.html"})
+	http.HandleFunc("/rename", chat.RenameHandler)
+	http.HandleFunc("/upload", chat.UploadHandler)
 	http.HandleFunc("/uploader", chat.UploaderHandler)
 	http.Handle("/avatars/",
 		http.StripPrefix("/avatars/", http.FileServer(http.Dir("pkg/chat/avatars"))))
