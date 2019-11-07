@@ -46,10 +46,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			bytes, _ := base64.StdEncoding.DecodeString(BlackDealerCookie.Value)
 			json.Unmarshal(bytes, &dealer)
 		}
-		if dealer.Stanted == false && player.Score <= 21 {
-			if dealer.Score > 18 {
+		if dealer.Stanted == false && player.Score < 22 {
+			if dealer.Score > 16 {
 				dealer.Stanted = true
-				data["mainMessage"] = "ディーラーはパスしました"
+				data["mainMessage"] = "ディーラーは引き終えました"
 			} else {
 				PlayCard(&dealer, &deck)
 			}
