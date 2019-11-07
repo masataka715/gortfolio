@@ -1,0 +1,56 @@
+{{define "title"}}ブラックジャック{{end}}
+
+{{define "body"}}
+<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
+    <h3>ブラックジャック</h3>
+    <p class="mt-4 mb-0">ディーラー</p>
+    <p class="font-weight-bold">{{ .dealer.ScoreMessage }}</p>
+    <div class="d-flex justify-content-center">
+        {{ range $i, $v := .dealer.Cards }}
+        <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
+        {{ end }}
+    </div>
+    <hr>
+    <div class="d-flex justify-content-center">
+        {{ range $i, $v := .player.Cards }}
+        <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
+        {{ end }}
+    </div>
+    <p>プレイヤー<br>（あなた）</p>
+    <p class="font-weight-bold">{{ .player.ScoreMessage }}</p>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <form method="post" action="/blackjack">
+            <button type="submit" name="stanted" value=false class="btn btn-outline-dark mr-2" style="cursor:pointer">
+                カードを引く
+            </button>
+        </form>
+        <form method="post" action="/blackjack">
+            <button type="submit" name="stanted" value=true class="btn btn-outline-dark" style="cursor:pointer">
+                引くのをやめる
+            </button>
+        </form>
+    </div>
+    <div >
+        <p class="text-danger font-weight-bold mt-4 mb-0">{{ .mainMessage }}</p>
+        {{ if .finishMessage }}
+        <p class="text-danger font-weight-bold">{{ .finishMessage }}</p>
+        <form method="post" action="/blackjack">
+            <button type="submit" name="stanted" value=false class="btn btn-dark" style="cursor:pointer">
+                もう一回やる
+            </button>
+        </form>
+        {{ end }}
+    </div>
+</div>
+<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
+    <h4>ルール</h4>
+    <ul class="text-left">
+        <li>最初は、プレイヤーとディーラーはそれぞれカードを2枚引く（ディーラーの2枚目のカードは分からない）</li>
+        <li>その後、先にプレイヤーがカードを引く。プレイヤーが21を超えていたらバースト、その時点でゲーム終了</li>
+        <li>プレイヤーが引き終えたら、その後ディーラーは、自分の手札が17以上になるまで引き続ける</li>
+        <li>プレイヤーとディーラーが引き終えたら勝負。より21に近い方の勝ち</li>
+        <li>JとQとKは10として扱う。Aは1として扱う</li>
+        <li>その他特殊なルールなし</li>
+    </ul>
+</div>
+{{end}}

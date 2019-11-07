@@ -4,6 +4,7 @@ import (
 	"gortfolio/config"
 	"gortfolio/database"
 	"gortfolio/pkg/auth"
+	"gortfolio/pkg/blackjack"
 	"gortfolio/pkg/chat"
 	"gortfolio/pkg/flash"
 	"gortfolio/pkg/footprint"
@@ -77,6 +78,7 @@ func main() {
 	http.HandleFunc("/", home.Handler)
 	http.Handle("/images/",
 		http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
+	http.HandleFunc("/blackjack", blackjack.Handler)
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
 	http.HandleFunc("/footprint", footprint.Handler)
