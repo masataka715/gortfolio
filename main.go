@@ -69,7 +69,7 @@ func main() {
 
 	gomniauth.SetSecurityKey(config.Config.GomniauthKey)
 	gomniauth.WithProviders(
-		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, config.Config.AppURLLocal+"/auth/callback/google"),
+		google.New(config.Config.GoogleClientID, config.Config.GoogleSecretValue, config.Config.AppURL+"/auth/callback/google"),
 	)
 
 	r := chat.NewRoom()
