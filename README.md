@@ -37,7 +37,7 @@
 <h2>技術</h2>
 <ol>
     <li>Golang1.13, gorm, Go Modules</li>
-    <li>GCE</li>
+    <li>GCE, Cloud DNS</li>
     <li>SQLite3</li>
     <li>Bootstrap4</li>
 </ol>
