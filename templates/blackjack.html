@@ -46,6 +46,7 @@
         <p class="text-danger font-weight-bold mt-4 mb-0">{{ .mainMessage }}</p>
         {{ if .finishMessage }}
         <p class="text-danger font-weight-bold">{{ .finishMessage }}</p>
+        <p class="text-danger font-weight-bold">{{ .victoryDefeat }}</p>
         <form method="post" action="/blackjack">
             <button type="submit" name="stanted" value=false class="btn btn-dark" style="cursor:pointer">
                 もう一回やる

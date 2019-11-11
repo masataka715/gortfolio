@@ -58,25 +58,36 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		SetBlackjackCookie(w, r, player, dealer)
 		if player.Score > 21 {
-			DeleteBlackjackCookie(w)
 			data["mainMessage"] = player.Name + "は21を超えてしまいました"
 			data["finishMessage"] = dealer.Name + "の勝ちです"
+
+			renewalPlayer := RenewalPlayer(player, "lose")
+			data["victoryDefeat"] = VictoryDefeatMes(renewalPlayer)
+			RenewBlackjackCookie(w, renewalPlayer)
 		}
 		if dealer.Score > 21 {
-			DeleteBlackjackCookie(w)
 			data["mainMessage"] = dealer.Name + "は21を超えてしまいました"
 			data["finishMessage"] = player.Name + "の勝ちです"
+
+			renewalPlayer := RenewalPlayer(player, "win")
+			data["victoryDefeat"] = VictoryDefeatMes(renewalPlayer)
+			RenewBlackjackCookie(w, renewalPlayer)
 		}
 		if player.Stanted == true && dealer.Stanted == true {
-			DeleteBlackjackCookie(w)
 			data["mainMessage"] = "どちらも引き終えました"
+			var renewalPlayer Player
 			if player.Score > dealer.Score {
 				data["finishMessage"] = player.Name + "の勝ちです"
+				renewalPlayer = RenewalPlayer(player, "win")
 			} else if player.Score == dealer.Score {
 				data["finishMessage"] = "引き分けです"
+				renewalPlayer = RenewalPlayer(player, "win")
 			} else {
 				data["finishMessage"] = player.Name + "の負けです"
+				renewalPlayer = RenewalPlayer(player, "lose")
 			}
+			data["victoryDefeat"] = VictoryDefeatMes(renewalPlayer)
+			RenewBlackjackCookie(w, renewalPlayer)
 		}
 	}
 
@@ -133,10 +144,11 @@ func SetBlackjackCookie(w http.ResponseWriter, r *http.Request, player Player, d
 	})
 }
 
-func DeleteBlackjackCookie(w http.ResponseWriter) {
+func RenewBlackjackCookie(w http.ResponseWriter, player Player) {
+	byte, _ := json.Marshal(player)
 	http.SetCookie(w, &http.Cookie{
 		Name:  "blackPlayer",
-		Value: "",
+		Value: base64.StdEncoding.EncodeToString(byte),
 		Path:  "",
 	})
 	http.SetCookie(w, &http.Cookie{
