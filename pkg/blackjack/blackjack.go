@@ -16,6 +16,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	footprint.Insert("ブラックジャック", when)
 
 	data := map[string]interface{}{}
+	data["Blackjack"] = GetAll()
 
 	if r.Method == http.MethodPost {
 		r.ParseForm()

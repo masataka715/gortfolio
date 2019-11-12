@@ -48,7 +48,7 @@ func RenewalPlayer(player Player, result string) Player {
 }
 
 func VictoryDefeatMes(renewalPlayer Player) string {
-	return strconv.Itoa(renewalPlayer.Victory) + "勝" + strconv.Itoa(renewalPlayer.Defeat) + "敗です"
+	return strconv.Itoa(renewalPlayer.Victory) + "勝" + strconv.Itoa(renewalPlayer.Defeat) + "敗"
 }
 
 func DrawCard(player *Player, deck *[]Card) Card {

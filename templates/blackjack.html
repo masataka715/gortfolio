@@ -1,23 +1,23 @@
 {{define "title"}}ブラックジャック{{end}}
 
 {{define "body"}}
-<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
+<div class="my-3 py-3 mx-auto w-75" style="background-color: ghostwhite">
     <h3>ブラックジャック</h3>
-    <p class="mt-4 mb-0">ディーラー</p>
+    <p class="mt-2 mb-0">ディーラー</p>
     {{ if .finishMessage }}
-        <p class="font-weight-bold">{{ .dealer.ScoreMessage }}</p>
-        <div class="d-flex justify-content-center">
+    <p class="font-weight-bold mb-1">{{ .dealer.ScoreMessage }}</p>
+    <div class="d-flex justify-content-center">
         {{ range $i, $v := .dealer.Cards }}
         <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
         {{ end }}
-        </div>
+    </div>
     {{ else }}
     <div class="d-flex justify-content-center">
         {{ range $i, $v := .dealer.Cards }}
         {{ if eq $i 1 }}
-            <div class="p-4 m-2 bg-white" style="font-size: 40px;">?</div>
+        <div class="p-4 m-2 bg-white" style="font-size: 40px;">?</div>
         {{ else }}
-            <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
+        <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
         {{ end }}
         {{ end }}
     </div>
@@ -28,16 +28,16 @@
         <div class="p-4 m-2 bg-white" style="font-size: 40px;">{{ $v.NumberName }}</div>
         {{ end }}
     </div>
-    <p>プレイヤー<br>（あなた）</p>
+    <p>あなた</p>
     <p class="font-weight-bold">{{ .player.ScoreMessage }}</p>
     <div class="btn-group" role="group" aria-label="Basic example">
         <form method="post" action="/blackjack">
-            <button type="submit" name="stanted" value=false class="btn btn-outline-dark mr-2" style="cursor:pointer">
+            <button type="submit" name="stanted" value=false class="btn btn-dark mr-2" style="cursor:pointer">
                 カードを引く
             </button>
         </form>
         <form method="post" action="/blackjack">
-            <button type="submit" name="stanted" value=true class="btn btn-outline-dark" style="cursor:pointer">
+            <button type="submit" name="stanted" value=true class="btn btn-dark" style="cursor:pointer">
                 引くのをやめる
             </button>
         </form>
@@ -45,24 +45,52 @@
     <div>
         <p class="text-danger font-weight-bold mt-4 mb-0">{{ .mainMessage }}</p>
         {{ if .finishMessage }}
-        <p class="text-danger font-weight-bold">{{ .finishMessage }}</p>
-        <p class="text-danger font-weight-bold">{{ .victoryDefeat }}</p>
+        <p class="text-danger font-weight-bold mb-0">{{ .finishMessage }}</p>
+        <p class="text-danger font-weight-bold">現在あなたは、{{ .victoryDefeat }}</p>
         <form method="post" action="/blackjack">
             <button type="submit" name="stanted" value=false class="btn btn-dark" style="cursor:pointer">
                 もう一回やる
             </button>
         </form>
+        <div class="bg-white mx-auto w-50">
+            <form method="post" action="/blackjack/insert">
+                <p class="mt-3 mb-0">名前と勝敗を、下記に残すことが出来ます</p>
+                <input type="text" name="name" placeholder="好きな名前">
+                <input type="hidden" name="result" value="{{ .victoryDefeat }}">
+                <input type="submit" value="勝敗を残す" class="btn btn-info" style="cursor:pointer">
+            </form>
+        </div>
         {{ end }}
     </div>
 </div>
-<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
+<div class="my-4 pt-1 mx-auto w-75" style="background-color: ghostwhite">
     <h4>ルール</h4>
-    <ul class="text-left">
+    <ul class="text-left mx-auto">
         <li>21を超えていたらアウト、その時点でゲーム終了</li>
         <li>ディーラーは、自分の手札が17以上になるまで引き続ける</li>
         <li>プレイヤーとディーラーが引き終えたら勝負。より21に近い方の勝ち</li>
         <li>JとQとKは10として扱う。Aは1として扱う</li>
         <li>その他特殊なルールなし</li>
     </ul>
+</div>
+<div class="my-4 pt-1 mx-auto w-75 table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr class="row table-info">
+                <th class="col-5">日時</th>
+                <th class="col">名前</th>
+                <th class="col">勝敗</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range $i, $v := .Blackjack }}
+            <tr class="row">
+                <td class="col-5">{{ $v.When }}</td>
+                <td class="col">{{ $v.Name }}</td>
+                <td class="col">{{ $v.Result}}</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
 </div>
 {{end}}

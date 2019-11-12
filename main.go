@@ -59,6 +59,7 @@ func main() {
 	utils.LoggingSettings("go.log")
 	// データベース
 	db := database.Open()
+	db.AutoMigrate(blackjack.Blackjack{})
 	db.AutoMigrate(chat.Message{})
 	db.AutoMigrate(auth.User{})
 	db.AutoMigrate(todo.Todo{})
@@ -78,6 +79,7 @@ func main() {
 	http.HandleFunc("/", home.Handler)
 	http.Handle("/images/",
 		http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
+	http.HandleFunc("/blackjack/insert", blackjack.InsertHandler)
 	http.HandleFunc("/blackjack", blackjack.Handler)
 	http.HandleFunc("/shiritori", shiritori.Handler)
 	http.HandleFunc("/scraping", scraping.Handler)
