@@ -10,6 +10,7 @@ import (
 	"gortfolio/pkg/footprint"
 	"gortfolio/pkg/home"
 	"gortfolio/pkg/page"
+	"gortfolio/pkg/provision"
 	"gortfolio/pkg/scraping"
 	"gortfolio/pkg/shiritori"
 	"gortfolio/pkg/todo"
@@ -59,6 +60,7 @@ func main() {
 	utils.LoggingSettings("go.log")
 	// データベース
 	db := database.Open()
+	db.AutoMigrate(provision.Provision{})
 	db.AutoMigrate(blackjack.Blackjack{})
 	db.AutoMigrate(chat.Message{})
 	db.AutoMigrate(auth.User{})
@@ -79,6 +81,7 @@ func main() {
 	http.HandleFunc("/", home.Handler)
 	http.Handle("/images/",
 		http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
+	http.HandleFunc("/provision", provision.Handler)
 	http.HandleFunc("/blackjack/insert", blackjack.InsertHandler)
 	http.HandleFunc("/blackjack", blackjack.Handler)
 	http.HandleFunc("/shiritori", shiritori.Handler)

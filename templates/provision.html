@@ -1,0 +1,9 @@
+{{define "title"}}条文検索{{end}}
+
+{{define "body"}}
+<div class="my-4 py-4 mx-auto w-75" style="background-color: mintcream">
+    {{ range $i, $v := .Provisions }}
+    <div class="text-left">{{ $v }}</div>
+    {{ end }}
+</div>
+{{end}}
