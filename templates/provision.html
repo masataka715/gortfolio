@@ -1,9 +1,26 @@
 {{define "title"}}条文検索{{end}}
 
 {{define "body"}}
-<div class="my-4 py-4 mx-auto w-75" style="background-color: mintcream">
-    {{ range $i, $v := .Provisions }}
-    <div class="text-left">{{ $v }}</div>
-    {{ end }}
+<div class="my-4 py-4 mx-auto w-75" style="background-color: aliceblue;">
+    <h3>刑法の条文検索</h3>
+    <div>
+        <p class="mb-0">条文番号（半角数字）で検索できます</p>
+        <form method="post" action="/provision">
+            <div class="input-group mx-auto w-25">
+                <input type="number" name="number" placeholder="条文番号" class="form-control"> 
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">検索</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="my-4 py-4 mx-auto w-75" style="background-color: aliceblue;">
+    <p class="font-weight-bold">全文表示</p>
+    <div style="height: 800px; overflow: scroll;">
+        {{ range $i, $v := .Provisions }}
+        <div class="text-left">{{ $v }}</div>
+        {{ end }}
+    </div>
 </div>
 {{end}}

@@ -67,7 +67,8 @@ func main() {
 	db.AutoMigrate(todo.Todo{})
 	db.AutoMigrate(footprint.Footprint{})
 	db.AutoMigrate(page.Page{})
-	page.Seed()
+	provision.Seed(db)
+	page.Seed(db)
 	defer db.Close()
 
 	gomniauth.SetSecurityKey(config.Config.GomniauthKey)

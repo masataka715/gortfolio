@@ -1,15 +1,13 @@
 package page
 
-import "gortfolio/database"
+import "github.com/jinzhu/gorm"
 
 type Page struct {
 	PageID   int
 	PageName string
 }
 
-func Seed() {
-	db := database.Open()
-	defer db.Close()
+func Seed(db *gorm.DB) {
 	var page Page
 	if err := db.Where("page_id = ?", 1).First(&page).Error; err == nil {
 		return
