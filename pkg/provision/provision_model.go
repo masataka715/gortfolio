@@ -21,10 +21,10 @@ func (provision *Provision) Insert() {
 	defer db.Close()
 }
 
-func GetOne(id int) Provision {
+func GetOne(kanjiNumber string) Provision {
 	db := database.Open()
 	var provision Provision
-	db.First(&provision, id)
+	db.Where("number LIKE ?", "%"+kanjiNumber+"%").First(&provision)
 	db.Close()
 	return provision
 }

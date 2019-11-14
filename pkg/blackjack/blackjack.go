@@ -21,7 +21,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		r.ParseForm()
 		stanted := r.FormValue("stanted")
-
 		deck := NewDeck()
 		ShuffleDeck(deck)
 

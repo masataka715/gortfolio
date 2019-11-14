@@ -9,11 +9,13 @@
             <div class="input-group mx-auto w-25">
                 <input type="number" name="number" placeholder="条文番号" class="form-control"> 
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="button">検索</button>
+                    <button class="btn btn-primary" type="submit">検索</button>
                 </div>
             </div>
         </form>
     </div>
+    <div class="mt-2 text-danger">{{ .Msg }}</div>
+    <div class="mt-4 mx-auto w-75 bg-white text-left">{{ .Result }}</div>
 </div>
 <div class="my-4 py-4 mx-auto w-75" style="background-color: aliceblue;">
     <p class="font-weight-bold">全文表示</p>
