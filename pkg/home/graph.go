@@ -53,7 +53,7 @@ func MakeAccessGraph() {
 	p.Add(bar)
 
 	filename := "images/access_graph.png"
-	if err := p.Save(4*vg.Inch, 4*vg.Inch, filename); err != nil {
+	if err := p.Save(6*vg.Inch, 6*vg.Inch, filename); err != nil {
 		panic(err)
 	}
 }

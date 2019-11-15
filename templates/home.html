@@ -1,20 +1,9 @@
 {{define "title"}}ホーム画面{{end}}
 
 {{define "body"}}
-<h3 class="mt-4">ホーム画面</h3>
+<h3 class="mt-2">ホーム画面</h3>
 <p class="text-primary my-3">{{ .AuthMessage }}</p>
-<div class="my-4 py-4 mx-auto w-75" style="background-color: lavenderblush">
-    <div class="bg-white mx-auto w-75">
-        <a href="https://github.com/masataka715/gortfolio">当サイトのソースコード(GitHub)</a>
-    </div>
-</div>
-<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
-    <p class="mb-0 font-weight-bold">
-        ページごとのアクセス数<br><small>(gonum使用)</small>
-    </p>
-    <img src="/images/access_graph.png" class="img-fluid" alt="アクセス数の棒グラフ">
-</div>
-<div class="my-4 py-4 mx-auto w-75" style="background-color:aliceblue">
+<div class="my-3 py-3 mx-auto w-75" style="background-color:aliceblue">
     <table class="table table-sm mx-auto w-75 bg-white">
         <thead>
             <tr>
@@ -38,6 +27,64 @@
             </tr>
         </tbody>
     </table>
+</div>
+<div class="my-4 py-4 mx-auto w-75" style="background-color: ghostwhite">
+    <p class="mb-0 font-weight-bold">
+        ページごとのアクセス数<br><small>(gonum使用)</small>
+    </p>
+    <img src="/images/access_graph.png" class="img-fluid" alt="アクセス数の棒グラフ">
+</div>
+<div class="my-3 mx-auto w-75">
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">ブラックジャック</h5>
+            <p class="card-text">ディーラーと対戦し、勝敗を記録できます</p>
+            <a href="/blackjack" class="btn btn-primary">ブラックジャックをする</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">刑法の条文検索</h5>
+            <p class="card-text">算用数字の条文番号で検索できて、便利です<br>スクレイピングによって取得した全文を見ることができます</p>
+            <a href="/provision" class="btn btn-primary">条文検索ページへ</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">Websocketを用いたチャット</h5>
+            <p class="card-text">グーグルアカウントでも、テストユーザーでもログインできます。<br>画像や名前を変更できます</p>
+            <a href="/chat" class="btn btn-primary">チャットページへ</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">スクレイピング</h5>
+            <p class="card-text">Qiitaのトレンド記事をスクレイピングしています</p>
+            <a href="/scraping" class="btn btn-primary">スクレイピングページへ</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">一人しりとり</h5>
+            <a href="/shiritori" class="btn btn-primary">しりとりページへ</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">タスク管理</h5>
+            <a href="/todo" class="btn btn-primary">タスク管理ページへ</a>
+        </div>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">当サイトのあしあと</h5>
+            <p class="card-text">ページごとのアクセス履歴が見れます<br>PDF出力できます</p>
+            <a href="/footprint" class="btn btn-primary">あしあとページへ</a>
+        </div>
+    </div>
+</div>
+<div class="bg-white mx-auto w-75">
+    <a href="https://github.com/masataka715/gortfolio" class="btn btn-primary">当サイトのソースコード(GitHub)</a>
 </div>
 <div class="my-4 py-4 mx-auto w-75" style="background-color: mintcream">
     <img src="/images/qrcode.png" class="img-fluid" alt="QRコード">
