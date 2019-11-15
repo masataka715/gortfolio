@@ -1,12 +1,17 @@
 package provision
 
 import (
+	"gortfolio/pkg/footprint"
 	"html/template"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	when := time.Now().Format("2006年01月02日 15時04分")
+	footprint.Insert("条文検索", when)
+
 	data := map[string]interface{}{}
 
 	if r.Method == http.MethodPost {
