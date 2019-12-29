@@ -8,3 +8,5 @@ IPA_font/
 go.mod
 go.sum
 text/
+lambda/hello
+lambda/*.zip
