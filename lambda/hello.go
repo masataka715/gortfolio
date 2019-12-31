@@ -1,32 +1,49 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/guregu/dynamo"
 )
 
+type Music struct {
+	Artist    string `dynamo:"Artist"`    //パーティションキー
+	SongTitle string `dynamo:"SongTitle"` //ソートキー
+}
+
 func hello() {
-	// ~/.aws/credentialsからアクセスキーを読み込む
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-	svc := sns.New(sess)
-	result, _ := svc.ListTopics(nil)
-	for _, t := range result.Topics {
-		log.Println(*t.TopicArn)
-		input := &sns.PublishInput{
-			Message:  aws.String("Hello world!"),
-			TopicArn: aws.String(*t.TopicArn),
-		}
-		result, _ := svc.Publish(input)
-		log.Println(result)
+	// 大きな流れ：認証情報→セッション→dynamoDB
+	creds := credentials.NewStaticCredentials("ACCESS_KEY", "SECRET_ACCESS_KEY", "") //第３引数はtoken
+	sess, _ := session.NewSession(&aws.Config{
+		Credentials: creds,
+		Region:      aws.String("ap-northeast-1")},
+	)
+
+	db := dynamo.New(sess)
+	table := db.Table("Music")
+	// データ入れる
+	u := Music{Artist: "イケメン風の人", SongTitle: "バレない程度にパクったメロディ"}
+	fmt.Println(u)
+	if err := table.Put(u).Run(); err != nil {
+		log.Println(err.Error())
+	} else {
+		log.Println("成功！")
 	}
+	// データ取得
+	var music []Music
+	err := table.Get("Artist", "イケメン風の人").All(&music)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	fmt.Println(music)
 }
 
 func main() {
-	// lambda.Start(hello)
-	hello()
+	lambda.Start(hello)
+	// hello()
 }
