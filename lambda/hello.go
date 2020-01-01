@@ -16,16 +16,7 @@ type Music struct {
 	SongTitle string `dynamo:"SongTitle"` //ソートキー
 }
 
-func insertMessage() {
-	// 大きな流れ：認証情報→セッション→sqs→dynamoDB
-	creds := credentials.NewStaticCredentials("ACCESS_KEY", "SECRET_ACCESS_KEY", "") //第３引数はtoken
-
-	sess, _ := session.NewSession(&aws.Config{
-		Credentials: creds,
-		Region:      aws.String("ap-northeast-1")},
-	)
-
-	// SQS
+func getMessage(sess *session.Session) *string {
 	svc := sqs.New(sess)
 	qURL := "https://sqs.ap-northeast-1.amazonaws.com/607012455302/dead.fifo"
 
@@ -44,27 +35,45 @@ func insertMessage() {
 
 	if err != nil {
 		fmt.Println("Error", err)
-		return
+		return nil
 	}
 
 	if len(result.Messages) == 0 {
 		fmt.Println("Received no messages")
-		return
+		return nil
 	}
 
 	mesBody := result.Messages[0].Body
-	fmt.Println(*mesBody)
+	return mesBody
+}
 
-	// dynamoDB
+func dynamoInsert(sess *session.Session, mesBody *string) {
 	db := dynamo.New(sess)
 	table := db.Table("Music")
 	// データ入れる
-	u := Music{Artist: "イケメン風の人", SongTitle: *mesBody}
-	fmt.Println(u)
-	if err := table.Put(u).Run(); err != nil {
+	music := Music{Artist: "イケメン風の人", SongTitle: *mesBody}
+	fmt.Println(music)
+	if err := table.Put(music).Run(); err != nil {
 		log.Println(err.Error())
 	} else {
-		log.Println("成功！")
+		log.Println("Success!")
+	}
+}
+
+func insertMessage() {
+	// 大きな流れ：認証情報→セッション→SQS→dynamoDB
+	creds := credentials.NewStaticCredentials("ACCESS_KEY", "SECRET_ACCESS_KEY", "")
+
+	sess, _ := session.NewSession(&aws.Config{
+		Credentials: creds,
+		Region:      aws.String("ap-northeast-1")},
+	)
+
+	// SQS
+	mesBody := getMessage(sess)
+	// dynamoDB
+	if mesBody != nil {
+		dynamoInsert(sess, mesBody)
 	}
 }
 
