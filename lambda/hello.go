@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/guregu/dynamo"
 )
 
@@ -16,34 +16,61 @@ type Music struct {
 	SongTitle string `dynamo:"SongTitle"` //ソートキー
 }
 
-func hello() {
-	// 大きな流れ：認証情報→セッション→dynamoDB
+func insertMessage() {
+	// 大きな流れ：認証情報→セッション→sqs→dynamoDB
 	creds := credentials.NewStaticCredentials("ACCESS_KEY", "SECRET_ACCESS_KEY", "") //第３引数はtoken
+
 	sess, _ := session.NewSession(&aws.Config{
 		Credentials: creds,
 		Region:      aws.String("ap-northeast-1")},
 	)
 
+	// SQS
+	svc := sqs.New(sess)
+	qURL := "https://sqs.ap-northeast-1.amazonaws.com/607012455302/dead.fifo"
+
+	result, err := svc.ReceiveMessage(&sqs.ReceiveMessageInput{
+		AttributeNames: []*string{
+			aws.String(sqs.MessageSystemAttributeNameSentTimestamp),
+		},
+		MessageAttributeNames: []*string{
+			aws.String(sqs.QueueAttributeNameAll),
+		},
+		QueueUrl:            &qURL,
+		MaxNumberOfMessages: aws.Int64(1),
+		VisibilityTimeout:   aws.Int64(20), // 20 seconds
+		WaitTimeSeconds:     aws.Int64(0),
+	})
+
+	if err != nil {
+		fmt.Println("Error", err)
+		return
+	}
+
+	if len(result.Messages) == 0 {
+		fmt.Println("Received no messages")
+		return
+	}
+
+	mesBody := result.Messages[0].Body
+	fmt.Println(*mesBody)
+
+	// dynamoDB
 	db := dynamo.New(sess)
 	table := db.Table("Music")
 	// データ入れる
-	u := Music{Artist: "イケメン風の人", SongTitle: "バレない程度にパクったメロディ"}
+	u := Music{Artist: "イケメン風の人", SongTitle: *mesBody}
 	fmt.Println(u)
 	if err := table.Put(u).Run(); err != nil {
 		log.Println(err.Error())
 	} else {
 		log.Println("成功！")
 	}
-	// データ取得
-	var music []Music
-	err := table.Get("Artist", "イケメン風の人").All(&music)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-	fmt.Println(music)
 }
 
 func main() {
-	lambda.Start(hello)
-	// hello()
+	// ラムダ実行
+	// lambda.Start(insertMessage)
+	// ローカルでテストする用
+	insertMessage()
 }
